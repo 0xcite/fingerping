@@ -57,7 +57,7 @@ Adding new fingeprints to fingerping's database is quite trivial. Simply generat
 
 ```bash
 $ python fingerping.py -gen ../newPNG/
-{'black_white': 4, 'control_8bit_i': 4, 'Compression': 13, 'ihdr_too_long': 0, 'ihdr_height_0': 0, 'invalid_name_reserved_bit_ancillary_public_chunk_before_idat': 10, 'idat_bad_zlib_method': 0, 'truecolor_trns_chunk': 13, 'gamma_four_and_srgb': 12, 'truecolor_alpha_trns_chunk': 12, 'invalid_length_iend': 10, 'nonconsecutive_idat': 0, 'filters RGB': [1, 2, 4], 'ihdr_width_0': 0, 'unknown_critical_chunk_bad_checksum': 0, 'two_plte_chunk': 0, 'idat_bad_filter': 11, 'CESA-2004-001': 0, 'ihdr_widthheight0': 0, 'no_iend': 0, 'jng_file': 0, 'control_8bit': 10, 'transparent_truncated_palette': 10, 'filters indexed': [0], 'transparent_bkdred': 13, 'two_ihdr_chunk': 0, 'idat_too_much_data': 10, 'invalid_name_ancillary_public_chunk_before_idat': 0, 'idat_empty_zlib_object': 0, 'truncated_chunk': 0, 'png64': 10, 'idat_junk_after_lz': 0, 'invalid_iccp_2': 10, 'ihdr_not_first_chunk': 0, 'control_rgba': 10, 'chunk_with_number_in_name_before_idat': 0, 'first_idat_empty': 10, 'invalid_name_ancillary_public_chunk_before_idat_bad_checksum': 0, 'png48': 10, 'unknown_critical_chunk': 0, 'iend_before_idat': 0, 'invalid_iccp_1': 10, 'idat_bad_zlib_checksum': 0, 'modified_phys': 11, 'invalid_name_ancillary_private_chunk_before_idat': 0, 'mng_file': 0, 'grayscale_with_plte': 10, 'ihdr_too_short': 0, 'gamma_four_nosrgb': 12, 'junk_after_iend': 10, 'indexed_no_plte': 0, 'plte_after_idat': 0, 'ihdr_invalid_compression_method': 0, 'idat_bad_zlib_checkbits': 0, 'CVE-2014-0333': 4, 'ios_cgbl_chunk': 0, 'Checksums': 11, 'control_grayscale': 10, 'idat_zlib_invalid_window': 0, 'ihdr_invalid_filter_method': 0}
+{'black_white': 4, 'control_8bit_i': 4, 'Compression': 13, 'ihdr_too_long': 0, 'ihdr_height_0': 0, ...}
 ``` 
 
 Then simply add a variable for the library to the fingerprints.py file, like below, replacing {fingerprint} with the aformentioned dictionary. Python reflection does the rest.
@@ -66,7 +66,10 @@ Then simply add a variable for the library to the fingerprints.py file, like bel
 newPNG = Fingerprint("newPNG","newPNG v1.0 64bit",{fingerprint})
 ```
 
+Listing the fingerprint database
+================================
 
+Running fingerping with the "-csv" option will output a tab delimited table containing all the fingerprints in fingerping's database.
 
 
 
