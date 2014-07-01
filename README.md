@@ -28,7 +28,7 @@ In order to fingerprint a web application, it must accept uploads of arbitrary P
 Usage
 =====
 
-The first step is to upload all the PNG files from the "images" directory to the target website (you might want to script that). All the resulting images must then be downloaded in a folder (e.g. site.com). Each output image must have the same name as the corresponding input image. Nothing needs to be done for images that the web application failed to decode. If some or all the output files are JPG files instead of PNG files, convert them first to PNG files (This will break some of the tests. A future version of the tool should account for this case).
+The first step is to upload all the PNG files from fingerping's "images" directory to the target website (you might want to script that). All the resulting images must then be downloaded in a folder (e.g. site.com). Each output image must have the same name as the corresponding input image. Nothing needs to be done for images that the web application failed to decode. If some or all the output files are JPG files instead of PNG files, convert them first to PNG files (This will break some of the tests. A future version of the tool should account for this case).
 
 Next, run fingerping using the folder with all the output images as argument:
 
