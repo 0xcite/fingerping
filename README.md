@@ -63,7 +63,7 @@ Note: Many sites preview or decode the images in the browser itself. The most li
 Adding new fingerprints
 =======================
 
-Adding new fingerprints to fingerping's database is quite trivial. Simply generate the image folder for the library as you would when fingerprinting a web application. Then run fingerping with the "-gen" option. fingerping will then output the library's fingerprint as a Python dictionary.
+Adding new fingerprints to fingerping's database is quite trivial. Simply generate the image folder for the target as you would when fingerprinting a web application. Then run fingerping with the "-gen" option. fingerping will then output the library's fingerprint as a Python dictionary.
 
 ```bash
 $ python fingerping.py -gen ../newPNG/
