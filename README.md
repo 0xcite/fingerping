@@ -11,7 +11,7 @@ fingerping helps you determine which framework and / or PNG image library a web 
 Technique
 =========
 
-fingerping  mainly relies on the difference in treatment of slightly invalid and / or ambiguous PNG images by different coders / decoders. Various cunningly crafted images will be refused by a number of libraries but accepted by the rest. 
+fingerping mainly relies on the difference in treatment of slightly invalid and / or ambiguous PNG images by various coders / decoders. That is, some cunningly crafted images will be refused by a number of libraries but accepted by the rest. 
 
 With enough images sent to a web application doubling as an oracle, it is most of the time possible to identify the underlying image library and also the application framework.
 
@@ -63,7 +63,7 @@ Note: Many sites preview or decode the images in the browser itself. The most li
 Adding new fingerprints
 =======================
 
-Adding new fingeprints to fingerping's database is quite trivial. Simply generate the image folder for the library as you would when fingerprinting a web application. Then run fingerping with the "-gen" option. fingerping will then ouput the library's fingerprint as a Python dictionary.
+Adding new fingerprints to fingerping's database is quite trivial. Simply generate the image folder for the library as you would when fingerprinting a web application. Then run fingerping with the "-gen" option. fingerping will then output the library's fingerprint as a Python dictionary.
 
 ```bash
 $ python fingerping.py -gen ../newPNG/
