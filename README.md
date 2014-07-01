@@ -8,12 +8,22 @@ Purpose
 
 fingerping helps you determine which framework and / or PNG image library a web application is using. This is a first step in order to assess potential vulnerabilities either in the web application itself, or in the underlying PNG library.
 
+Technique
+=========
+
+fingerping  mainly relies on the difference in treatment of slightly invalid and / or ambiguous PNG images by different coders / decoders. Various cunningly crafted images will be refused by a number of libraries but accepted by the rest. 
+
+With enough images sent to a web application doubling as an oracle, it is most of the time possible to identify the underlying image library and also the application framework.
+
+fingerping contains more than 50 specially crafted PNG images.
+
+
 Requirements
 ============
 
 fingerping runs on Python 2.x with only the built-in modules.
 
-In order to fingerprint a web application, it must be possible to upload arbitrary PNG files. The web application must then at least decode the image and return a success / fail result. For better results, the web application should return a re-encoded version of the image.
+In order to fingerprint a web application, it must accept uploads of arbitrary PNG files. The web application must then at least try to decode the image and return a success / fail result. For better results, the web application should return a re-encoded version of the image.
 
 Usage
 =====
