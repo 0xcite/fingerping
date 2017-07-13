@@ -12,32 +12,8 @@ import operator
 import sys
 import os.path
 from xpng import Xpng
-
-
-# A named tuple representing a fingerprint test
-# name = name of the test
-# filename = filename of the png file to test
-# function = function to call to execute the test
-# description = description of the test
-Test = namedtuple("test", "name filename function description")
-
-# A named tuple representing the fingerprint of a PNG library
-# name = name of the language / library / tool
-# description = description of the library (e.g. version number)
-# results = a dictionary of test fingerprint test results
-Fingerprint = namedtuple("fingerprint", "name description results")
-
-
-###############################################
-
-# include all the tests and fingerprints from external files
-
-execfile("tests.py")
-execfile("fingerprints.py")
-
-
-###############################################
-
+from tests import Tests
+from fingerprints import Fingerprints
 
 # Test all the images in a directory (don't print warnings when generating fingerprints)
 def doTests(tests, fingerprints, warn):
@@ -124,8 +100,8 @@ def checkCommandLine(line):
 
 # use reflection to get all the tests and all the fingeprints in lists
 locals = locals().copy()
-tests = sorted([t for t in locals.itervalues() if isinstance(t, Test)], key=operator.attrgetter('name'))
-fingerprints = [t for t in locals.itervalues() if isinstance(t, Fingerprint)]
+tests = sorted(Tests.all_tests, key=lambda test: test.name)
+fingerprints = Fingerprints.all_fingerprints
 
 if not checkCommandLine(sys.argv):
     print "usage:"
