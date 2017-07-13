@@ -330,33 +330,33 @@ class Xpng:
     # All the following tests should return values > 10 (or any kind of object like a list actually)
     ################################################################################################
 
-    def correctChecksums(image):
+    def correctChecksums(self):
         'Fingerprint depending on the correctness of the checksums of the output image'
-        if image._verify_checksums():
+        if self._verify_checksums():
             return 11
         else:
             return 12
 
-    def filtersUsed(image):
+    def filtersUsed(self):
         'Fingerprint resulting from the set of filters used in the scanlines of the output image (returns a sorted list of the filters)'
-        return sorted(image.filters_used)
+        return sorted(self.filters_used)
 
-    def paletteUsed(image):
+    def paletteUsed(self):
         'Fingerprint depending on the palette used to decode images with two palettes (when not rejected)'
-        if image.hasColor([185, 96, 142]):
+        if self.hasColor([185, 96, 142]):
             return 11
-        elif image.hasColor([96, 142, 185]):
+        elif self.hasColor([96, 142, 185]):
             return 12
         else:
             return 13
 
-    def gamma(image):
+    def gamma(self):
         'Fingerprint depending on how the decoder treated the gamma information from the input image'
-        pixel = image.getPixelRgb(120, 140)
+        pixel = self.getPixelRgb(120, 140)
         if pixel[0] + pixel[1] + pixel[2] < 96:
             return 11
         else:
-            chunk = image._get_chunk("gAMA")
+            chunk = self._get_chunk("gAMA")
             if chunk == None:
                 return 12
             gammav = struct.unpack("!I", chunk.content)
@@ -364,31 +364,31 @@ class Xpng:
                 return 13
             return 14
 
-    def ihdrUsed(image):
+    def ihdrUsed(self):
         'Fingerprint depending on the ihdr used to decode images with two ihdr (when not rejected)'
-        if image.width == 252:
+        if self.width == 252:
             return 11
-        elif image.width == 189:
+        elif self.width == 189:
             return 12
         else:
             return 13
 
-    def badIdatFilter(image):
+    def badIdatFilter(self):
         'Fingerprint depending on the treatment of images with invalid scanline filters'
-        pixel = image.getPixelRgb(5, 0)
+        pixel = self.getPixelRgb(5, 0)
         if pixel == [65, 83, 255]:
             return 11  # Most libraries return the correct image
         elif pixel == [57, 82, 255]:
             return 12  # One library outputs a corrupted image
         return 13
 
-    def zlibCompression(image):
+    def zlibCompression(self):
         'Fingerprint depending on the zlib compression level flag of the output image'
-        return 11 + image.zlevel
+        return 11 + self.zlevel
 
-    def physChunk(image):
+    def physChunk(self):
         'Fingerprint depending on how the decoder treated the phys information in the input image'
-        chunk = image._get_chunk("pHYs")
+        chunk = self._get_chunk("pHYs")
         if chunk == None:
             return 11
         x, y, u = struct.unpack("!IIB", chunk.content)
@@ -400,11 +400,11 @@ class Xpng:
             return 14  # .net
         return 15
 
-    def truecolorTrns(image):
+    def truecolorTrns(self):
         'Fingerprint depending on how the decoder treated an input image with a tRNS chunk'
-        if image.colorType == 6:
+        if self.colorType == 6:
             return 11
-        chunk = image._get_chunk("tRNS")
+        chunk = self._get_chunk("tRNS")
         if chunk == None:
             return 12
         return 13
