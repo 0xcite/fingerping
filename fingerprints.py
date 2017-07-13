@@ -1,3 +1,14 @@
+#!/usr/bin/python
+#
+# List of all the fingerprintings in the format of the following Fingerprint class
+# You can easily generate new fingerprints with -gen and then add a new Fingeprint below (inside the all_fingerprints list)
+#
+# @author: Dominique Bongard, floyd
+#
+# Code is licensed under -- Apache License 2.0 http://www.apache.org/licenses/
+#
+# Class oriented, pythonic and additional fingerpint changes by floyd, @floyd_ch, https://www.floyd.ch
+
 class Fingerprint:
     def __init__(self, name, description, results):
         self.name = name

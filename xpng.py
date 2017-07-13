@@ -2,12 +2,11 @@
 #
 # xpng: a quick and dirty (and very buggy) PNG library
 # 
-# @author:Dominique Bongard
-# 
+# @author: Dominique Bongard, floyd
 #
 # Code is licensed under -- Apache License 2.0 http://www.apache.org/licenses/
 #
-# Changes by floyd, @floyd_ch, https://www.floyd.ch
+# Class oriented, pythonic and additional fingerpint changes by floyd, @floyd_ch, https://www.floyd.ch
 
 
 from collections import namedtuple
@@ -315,6 +314,7 @@ class Xpng:
             f.write(self._get_blob())
 
     # Fingerprinting/test functions, referenced in tests.py
+    # TODO: As soon as we implement JPEG as well, we need to add a parent class that implements the following functions
 
     def conversion_success(self):
         '''

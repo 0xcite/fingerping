@@ -1,6 +1,14 @@
-from xpng import Xpng
+#!/usr/bin/python
+#
+# List of all Tests that can be done
+#
+# @author:Dominique Bongard, floyd
+#
+# Code is licensed under -- Apache License 2.0 http://www.apache.org/licenses/
+#
+# Class oriented, pythonic and additional fingerpint changes by floyd, @floyd_ch, https://www.floyd.ch
 
-# List of all the fingerprinting tests in the format of the following Test class
+from xpng import Xpng
 
 class Test:
     def __init__(self, name, filename, function, description):
@@ -8,7 +16,6 @@ class Test:
         self.filename = filename
         self.function = function
         self.description = description
-
 
 class Tests:
     all_tests = [
