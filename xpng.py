@@ -143,7 +143,6 @@ class Xpng:
             size = [1, 0, 3, 1, 2, 0, 4]
             return (self.colorDepth / 8.0) * size[self.colorType]
 
-
     def _decompress(self):
         '''
         concatenates all the IDAT chunks and then decompresses the resulting zlib blob
@@ -242,9 +241,9 @@ class Xpng:
             self.pixels.append(unfiltered)
             prior = unfiltered
 
+    # Setup methods finish here. Starting with private methods called by public methods.
 
-    # Public methods
-    def getPaletteColors(self):
+    def _get_palette_colors(self):
         '''
         Returns a list of all the colors in an indexed image
         It doesn't take into account if the color is actually used in the image
@@ -256,8 +255,7 @@ class Xpng:
             colors.append([plteBytes[x], plteBytes[x + 1], plteBytes[x + 2]])
         return colors
 
-
-    def getPixelRgb(self, x, y):
+    def _get_pixel_rgb(self, x, y):
         '''
         Returns the RGB value of a pixel in the image given its coordinates
         if the image is indexed, the pixel color is looked up in the palette
@@ -271,9 +269,9 @@ class Xpng:
         elif self.colorType == 6:
             return value[0:3]
         elif self.colorType == 3:
-            return self.getPaletteColors()[value[0]]
+            return self._get_palette_colors()[value[0]]
 
-    def hasColor(self, color):
+    def _has_color(self, color):
         'Check if the image contains a particular color'
         if not self.colorDepth == 8:
             return False
@@ -282,43 +280,43 @@ class Xpng:
         elif self.colorType == 6:
             return color in map(lambda x: [x[0], x[1], x[2]], itertools.chain(*self.pixels))
         elif self.colorType == 3:
-            return color in self.getPaletteColors()
+            return color in self._get_palette_colors()
 
-    def generateChunk(self, name, data):
+    def _generate_chunk(self, name, data):
         'Generate a chunk from name and data (for saving)'
         return Xpng.Chunk(len(data), name, data, self._chunk_checksum(name, data), 0)
 
-    def generateIdat(self):
+    def _generate_idat(self):
         'Generate the IDAT chunk from the pixels (for saving)'
         data = ""
         for line in self.pixels:
             data += '\0'
             data += str(bytearray(itertools.chain(*line)))
         compressed = zlib.compress(data)
-        idat = self._generate_chunk_blob(self.generateChunk("IDAT", compressed))
+        idat = self._generate_chunk_blob(self._generate_chunk("IDAT", compressed))
         return idat
 
-    def getBlob(self):
+    def _get_blob(self):
         'returns the binary representation of the image in PNG format'
         blob = "\x89PNG\x0d\x0a\x1a\x0a"
         blob += self._get_chunk_blob("IHDR")
         plte = self._get_chunk_blob("PLTE")
         if not plte == None:
             blob += plte
-        blob += self.generateIdat()
+        blob += self._generate_idat()
         blob += self._get_chunk_blob("IEND")
         return blob
 
-    def save(self, fileName):
+    # Public methods start from here
+
+    def save(self, file_name):
         'Save the image in PNG format (used to verify that the image decoding works correctly)'
-        with open(fileName, 'wb') as f:
-            f.write(self.getBlob())
+        with open(file_name, 'wb') as f:
+            f.write(self._get_blob())
 
-    ###############################################
-    # Fingerprinting functions, referenced in tests.py
-    ###############################################
+    # Fingerprinting/test functions, referenced in tests.py
 
-    def conversionSuccess(self):
+    def conversion_success(self):
         '''
         The most simple fingerprinting function
         Returns 0 if the image is absent or empty (meaning the target failed to decode the input image)
@@ -327,32 +325,31 @@ class Xpng:
         '''
         return self.valid
 
-    # All the following tests should return values > 10 (or any kind of object like a list actually)
-    ################################################################################################
+    # All the following fingerprint/test functions should return values > 10 (or any kind of object like a list actually)
 
-    def correctChecksums(self):
+    def correct_checksums(self):
         'Fingerprint depending on the correctness of the checksums of the output image'
         if self._verify_checksums():
             return 11
         else:
             return 12
 
-    def filtersUsed(self):
+    def filters_used(self):
         'Fingerprint resulting from the set of filters used in the scanlines of the output image (returns a sorted list of the filters)'
         return sorted(self.filters_used)
 
-    def paletteUsed(self):
+    def palette_used(self):
         'Fingerprint depending on the palette used to decode images with two palettes (when not rejected)'
-        if self.hasColor([185, 96, 142]):
+        if self._has_color([185, 96, 142]):
             return 11
-        elif self.hasColor([96, 142, 185]):
+        elif self._has_color([96, 142, 185]):
             return 12
         else:
             return 13
 
     def gamma(self):
         'Fingerprint depending on how the decoder treated the gamma information from the input image'
-        pixel = self.getPixelRgb(120, 140)
+        pixel = self._get_pixel_rgb(120, 140)
         if pixel[0] + pixel[1] + pixel[2] < 96:
             return 11
         else:
@@ -364,7 +361,7 @@ class Xpng:
                 return 13
             return 14
 
-    def ihdrUsed(self):
+    def ihdr_used(self):
         'Fingerprint depending on the ihdr used to decode images with two ihdr (when not rejected)'
         if self.width == 252:
             return 11
@@ -373,20 +370,20 @@ class Xpng:
         else:
             return 13
 
-    def badIdatFilter(self):
+    def bad_idat_filter(self):
         'Fingerprint depending on the treatment of images with invalid scanline filters'
-        pixel = self.getPixelRgb(5, 0)
+        pixel = self._get_pixel_rgb(5, 0)
         if pixel == [65, 83, 255]:
             return 11  # Most libraries return the correct image
         elif pixel == [57, 82, 255]:
             return 12  # One library outputs a corrupted image
         return 13
 
-    def zlibCompression(self):
+    def zlib_compression(self):
         'Fingerprint depending on the zlib compression level flag of the output image'
         return 11 + self.zlevel
 
-    def physChunk(self):
+    def phys_chunk(self):
         'Fingerprint depending on how the decoder treated the phys information in the input image'
         chunk = self._get_chunk("pHYs")
         if chunk == None:
@@ -400,7 +397,7 @@ class Xpng:
             return 14  # .net
         return 15
 
-    def truecolorTrns(self):
+    def truecolor_trns(self):
         'Fingerprint depending on how the decoder treated an input image with a tRNS chunk'
         if self.colorType == 6:
             return 11

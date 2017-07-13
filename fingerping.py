@@ -10,9 +10,8 @@
 from collections import namedtuple
 import operator
 import sys
-import xpng
 import os.path
-
+from xpng import Xpng
 
 
 # A named tuple representing a fingerprint test
@@ -27,9 +26,6 @@ Test = namedtuple("test", "name filename function description")
 # description = description of the library (e.g. version number)
 # results = a dictionary of test fingerprint test results
 Fingerprint = namedtuple("fingerprint", "name description results")
-
-
-
 
 
 ###############################################
@@ -53,7 +49,7 @@ def doTests(tests, fingerprints, warn):
     # Execute each test
     for test in tests:
         content = readImage(directory + test.filename + ".png")
-        image = xpng.Xpng(content)
+        image = Xpng(content)
         if not image.valid == 0:
             # Only execute the test if there is an image to test
             result = test.function(image)
