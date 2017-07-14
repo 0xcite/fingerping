@@ -21,7 +21,7 @@ class Fingerping:
         self.all_tests = sorted(Tests.all_tests, key=lambda test: test.name)
         self.all_fingerprints = Fingerprints.all_fingerprints
 
-    def doTests(self, warn):
+    def do_tests(self, get_image_cont_func, warn):
         "Test all the images in a directory (don't print warnings when generating fingerprints)"
         results = {}
         fingerprintScores = {}
@@ -30,8 +30,7 @@ class Fingerping:
             fingerprintScores[fingerprint.name] = 0
         # Execute each test
         for test in self.all_tests:
-            # TODO: Refactor so we can also use this class with in-memory pictures rather than files on the disc
-            content = self.readImage(directory + test.filename + ".png")
+            content = get_image_cont_func(test.filename)
             image = Xpng(content)
             if not image.valid == 0:
                 # Only execute the test if there is an image to test
@@ -51,16 +50,7 @@ class Fingerping:
                     fingerprintScores[fingerprint.name] += 1
         return results, fingerprintScores
 
-    def readImage(self, fileName):
-        'reads the image in memory from file'
-        if os.path.exists(fileName):
-            with open(fileName, 'rb') as f:
-                try:
-                    return f.read()
-                except:
-                    pass
-
-    def generateCsv(self):
+    def generate_csv(self):
         'Generate a csv table with all the test results for each fingerprint (which you can then import in LibreOffice or whatever)'
         header = "/"
         for test in self.all_tests:
@@ -76,7 +66,7 @@ class Fingerping:
                     row += "\t" + str(fingerprint.results[test.name])
             print row
 
-    def showResults(self, scores):
+    def show_results(self, scores):
         'Show the fingerprinting result with the most likely library match at the bottom'
         nb = len(self.all_tests)
         ordered = sorted(scores.iteritems(), key=lambda x: x[1])
@@ -86,6 +76,17 @@ class Fingerping:
 if __name__ == "__main__":
     'Means this script is directly executed with "python fingerping.py"'
     f = Fingerping()
+
+    def read_image(file_name):
+        'reads the image in memory from file'
+        file_name = directory + file_name + ".png"
+        if os.path.exists(file_name):
+            with open(file_name, 'rb') as f:
+                try:
+                    return f.read()
+                except:
+                    pass
+
     # TODO: replace with argparse
     def check_command_line(line):
         'Check if the command line has valid options'
@@ -110,17 +111,18 @@ if __name__ == "__main__":
 
     # Generate a csv output with all the test results for each library fingerprint known to the tool
     if sys.argv[1] == "-csv":
-        f.generateCsv()
+        f.generate_csv()
         sys.exit(0)
 
     # last command line argument is the directory with all the images to use in a fingerprint test
     directory = sys.argv[len(sys.argv) - 1] + "/"
 
-    results, fingerprintScores = f.doTests(sys.argv[1] != "-gen")
+    warn = sys.argv[1] != "-gen"
+    results, fingerprintScores = f.do_tests(read_image, warn)
 
     # If the -gen parameter is given on the command line, don't give the fingerprinting results
     # but instead generate a new fingerprint
     if sys.argv[1] == "-gen":
         print results
     else:
-        f.showResults(fingerprintScores)
+        f.show_results(fingerprintScores)
